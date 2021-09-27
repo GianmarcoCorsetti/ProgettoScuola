@@ -12,13 +12,14 @@ namespace Scuola.Model {
         ESPERTO,
         GURU
     }
-    public class Corso {
+    public class Corso : Object{
         public long Id { get; set; }
         public string Titolo { get; set; }
-        public int DurataInOre { get; set; }
+        public int AmmontareOre { get; set; }
         public ExperienceLevel Level { get; set; }
-        public string Description { get; set; }
-        public decimal StandardPrice { get; set; }
+        public int MyProperty { get; set; }
+        public string Descrizione { get; set; }
+        public decimal CostoDiRiferimento { get; set; }
 
         public Corso(long newId, string newTitolo, int newDurataInOre, ExperienceLevel newLevel, string newDescription, decimal newStandardPrice){
             Id = newId;
@@ -26,6 +27,10 @@ namespace Scuola.Model {
             DurataInOre = newDurataInOre;
             Description = newDescription;
             StandardPrice = newStandardPrice;
+        }
+        public override string ToString()
+        {
+            return $"ID: {Id} Titolo: {Titolo} Livello: {Level}";
         }
     }
 }
