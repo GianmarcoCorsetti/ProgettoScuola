@@ -11,22 +11,29 @@ namespace Scuola.Model.Data {
         private List<Corso> courses = new List<Corso>();
         private List<EdizioneCorso> courseEditions = new List<EdizioneCorso>();
         private ISet<Corso> courseSet = new HashSet<Corso>();
+        private List<Azienda> aziende = new List<Azienda>();
+        private static long lastIdCourse = 2;
+        private static long lastIdEdition = 1;
+        private static long lastIdProgetti = 2;
+        private static long lastIdCategorie = 2;
+        private static long lastIdAzienda = 3;
+        private static long lastIdFinanziatore = 2;
         // è una struttura che rifiuta i duplicati, efficiente nel controllare la presenza o meno di elementi nel suo insieme 
         // quindi nel contains è efficace
         public InMemoryRepository(){
             Corso c = new Corso(
-                id: 241499,
+                id: 1,
                 titolo: "CorsoX",
                 ammontareOre: 240,
                 livello: new Level(3203192, ExperienceLevel.MEDIO, "è un corso bello"),
                 descrizione: "Questo è un corso bello e inventato",
                 costoDiRiferimento: 2000,
-                project: new Progetti(
-                    id: 103913,
+                progetto: new Progetto(
+                    id: 1,
                     descrizione: "questo è un bel progetto",
                     titolo: "Pierugolandia",
                     classAzienda: new Azienda(
-                        id: 328832,
+                        id: 1,
                         nome: "GMG",
                         citta: "Treviso",
                         indirizzo: "Via delle Lavandaie",
@@ -36,63 +43,47 @@ namespace Scuola.Model.Data {
                         partitaIva: "29381923712"
                                             )
                     ),
-                category: new Categoria(
-                    id: 361273,
+                categoria: new Categoria(
+                    id: 1,
                     categoriaCorso: Category.SISTEMISTICA,
                     descrizione: "mi sono rotto i cojoni"
                     )
                );
             courses.Add(c);
             EdizioneCorso ed = new EdizioneCorso(
-                id: 241499,
+                id: 1,
                 start: new LocalDate(year: 1998, month: 11 , day: 11),
                 end: new LocalDate(year: 1999, month: 11, day: 11),
                 maxStudenti: 200,
                 realPrice: 4000,
                 inPresenza: true,
-                aule: new Aula(
-                    id: 31623,
+                aula: new Aula(
+                    id: 1,
                     nome: "Aula Archimede",
                     capacitaMax: 200,
                     virtuale: true,
                     isComputerized: true,
                     hasProjector: true
                     ),
-                classCorso: new Corso(
-                    id: 241499,
-                    titolo: "CorsoX",
-                    ammontareOre: 240,
-                    livello: new Level(3203192, ExperienceLevel.MEDIO, "è un corso bello"),
-                    descrizione: "Questo è un corso bello e inventato",
-                    costoDiRiferimento: 2000,
-                    project: new Progetti(
-                        id: 103913,
-                        descrizione: "questo è un bel progetto",
-                        titolo: "Pierugolandia",
-                        classAzienda: new Azienda(
-                            id: 328832,
-                            nome: "GMG",
-                            citta: "Treviso",
-                            indirizzo: "Via delle Lavandaie",
-                            cP: "00072",
-                            telefono: "3922351915",
-                            email: "gianmarco.bello97@gmail.com",
-                            partitaIva: "29381923712"
-                                                )
-                        ),
-                    category: new Categoria(
-                        id: 361273,
-                        categoriaCorso: Category.SISTEMISTICA,
-                        descrizione: "mi sono rotto i cojoni"
-                        )
-                   ),
-                   classFinanziatore: new Finanziatore(
-                        id: 6371823,
+                corso: c,
+                   finanziatore: new Finanziatore(
+                        id: 1,
                         titolo: "Finanzia sta ceppa",
                         descrizione: "può bastare così"
                         )
                     );
             courseEditions.Add(ed);
+            Azienda az = new Azienda(
+                id: 3,
+                nome: "GMG",
+                citta: "Treviso",
+                indirizzo: "Via delle Lavandaie",
+                cP: "00072",
+                telefono: "3922351915",
+                email: "gianmarco.bello97@gmail.com",
+                partitaIva: "29381923712"
+                );
+            
         }
 
         private Level Level(int v)
@@ -102,12 +93,20 @@ namespace Scuola.Model.Data {
 
         public Corso AddCourse2 (Corso c)
         {
+            if(c.Id == 0)
+            {
+                c.Id = ++lastIdCourse;
+            }
             bool added = courseSet.Add(c);
             return added ? c : null;
         }
         public Corso AddCourse(Corso newCoruse)
         {
-            if( courses.Contains(newCoruse) ){
+            if (newCoruse.Id == 0)
+            {
+                newCoruse.Id = ++lastIdCourse;
+            }
+            if ( courses.Contains(newCoruse) ){
                 Console.WriteLine("Questo corso è già esistente");
                 return null;
             }
@@ -116,11 +115,28 @@ namespace Scuola.Model.Data {
                 return newCoruse;
             }
         }
-        public IEnumerable<EdizioneCorso> getCourseEditions(long courseId)
+
+        public Azienda AddAzienda(Azienda newAzienda)
+        {
+            if (newAzienda.Id == 0)
+            {
+                newAzienda.Id = ++lastIdAzienda;
+            }
+            if ( aziende.Contains(newAzienda) ){
+                Console.WriteLine("Questa azienda è già esistente");
+                return null;
+            }
+            else{
+                aziende.Add(newAzienda);
+                return newAzienda;
+            }
+        }
+
+        public IEnumerable<EdizioneCorso> GetCourseEditions(long courseId)
         {
             List<EdizioneCorso> edizioniScelte = new List<EdizioneCorso>();
             foreach (var edizione in courseEditions){
-                if (edizione.ClassCorso.Id == courseId)
+                if (edizione.Corso.Id == courseId)
                 {
                     edizioniScelte.Add(edizione);
                 }
@@ -133,6 +149,10 @@ namespace Scuola.Model.Data {
         }
         // anche se si aspetta un Enumerable, dato che la lista è una sottoclasse di Enumerable allora può essere fatto
         public EdizioneCorso AddEdition(EdizioneCorso ed){
+            if(ed.Id == 0)
+            {
+                ed.Id = ++lastIdEdition;
+            }
             courseEditions.Add(ed);
             return ed;
         }
@@ -154,11 +174,20 @@ namespace Scuola.Model.Data {
         public IEnumerable<EdizioneCorso> FindEditionByCourses(long courseId){
             List<EdizioneCorso> editions = new List<EdizioneCorso>();
             foreach (var ed in courseEditions){
-                if (ed.ClassCorso.Id == courseId){
+                if (ed.Corso.Id == courseId){
                     editions.Add(ed);
                 }
             }
             return editions;
+        }
+
+        public Azienda FindAziendaById(long id)
+        {
+            Azienda found = aziende.SingleOrDefault((Azienda a) =>
+            {
+                return a.Id == id;
+            });
+            return found;
         }
     }
 }

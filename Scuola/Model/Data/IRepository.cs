@@ -8,10 +8,10 @@ namespace Scuola.Model.Data {
     public interface IRepository {
         IEnumerable<Corso> GetCourses();
         Corso AddCourse(Corso newCoruse);
-        IEnumerable<EdizioneCorso> getCourseEditions(long courseId);
+        IEnumerable<EdizioneCorso> GetCourseEditions(long courseId);
         EdizioneCorso AddEdition(EdizioneCorso ed);
         Corso FindById(long id);
-        IEnumerable<EdizioneCorso> FindEditionByCourses(long courseId);
-
+        Azienda FindAziendaById(long id);
+        Azienda AddAzienda(Azienda newAzienda);
     }
 }

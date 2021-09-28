@@ -13,21 +13,28 @@ namespace Scuola.Model {
         public CourseService ( IRepository repo){
             Repository = repo;
         }
+        public Azienda CreateAzienda(Azienda a)
+        {
+            return Repository.AddAzienda(a);
+        }
         public IEnumerable<Corso> GetAllCourses(){
             return Repository.GetCourses();
         }
         public Corso CreateCourse(Corso c){
             return Repository.AddCourse(c);
         }
+        public Azienda GetAzienda(long id){
+            return Repository.FindAziendaById(id);
+        }
         public IEnumerable<EdizioneCorso> GetCourseEdition(long id){
-            return Repository.getCourseEditions(id);
+            return Repository.GetCourseEditions(id);
         }
         public EdizioneCorso CreateCourseEdition(EdizioneCorso ed, long idCourse){
             Corso found = Repository.FindById(idCourse);
             if(found == null){
                 return null;
             }
-            ed.NomeCorso = found;
+            ed.Corso = found;
             Repository.AddEdition(ed);
             return ed;
         }
@@ -39,14 +46,14 @@ namespace Scuola.Model {
             {
                 return null;
             }
-            IEnumerable<EdizioneCorso> editions = Repository.FindEditionByCourses(id);
+            IEnumerable<EdizioneCorso> editions = Repository.GetCourseEditions(id);
             report.NumEdition = editions.Count();
             report.SumPrices = editions.Sum(e => e.RealPrice);
             report.AveragePrice = report.SumPrices / report.NumEdition;
             report.MedPrice = CalculateMedianPrice(editions);
             report.ModaPrice = CalculateModa(editions);
-            report.MaxStudents = editions.Max(e => e.NumStudents);
-            report.MaxStudents = editions.Min(e => e.NumStudents);
+            //report.MaxStudents = editions.Max(e => e.NumStudents);
+            //report.MaxStudents = editions.Min(e => e.NumStudents);
             return report;
         }
 

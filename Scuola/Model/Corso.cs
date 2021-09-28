@@ -12,9 +12,23 @@ namespace Scuola.Model {
         public string Descrizione { get; set; }
         public decimal CostoDiRiferimento { get; set; }
         public Level Livello { get; set; }
-        public Progetti Project { get; set; }
-        public Categoria Category { get; set; }
-        public Corso(long id, string titolo, int ammontareOre, string descrizione, decimal costoDiRiferimento, Level livello, Progetti project, Categoria category)
+        public long IdLivello { get; set; }
+        public Progetto Progetto { get; set; }
+        public long IdProgetto { get; set; }
+        public Categoria Categoria { get; set; }
+        public long IdCategoria { get; set; }
+        public Corso(long id, string titolo, int ammontareOre, string descrizione, decimal costoDiRiferimento, long idLivello, long idProgetto, long idCategoria)
+        {
+            Id = id;
+            Titolo = titolo;
+            AmmontareOre = ammontareOre;
+            Descrizione = descrizione;
+            CostoDiRiferimento = costoDiRiferimento;
+            IdLivello = idLivello;
+            IdProgetto = idProgetto;
+            IdCategoria = idCategoria;
+        }
+        public Corso(long id, string titolo, int ammontareOre, string descrizione, decimal costoDiRiferimento, Level livello, Progetto progetto, Categoria categoria)
         {
             Id = id;
             Titolo = titolo;
@@ -22,12 +36,13 @@ namespace Scuola.Model {
             Descrizione = descrizione;
             CostoDiRiferimento = costoDiRiferimento;
             Livello = livello;
-            Project = project;
-            Category = category;
+            Progetto = progetto;
+            Categoria = categoria;
         }
+
         public override string ToString()
         {
-            return $"ID: {Id} Titolo: {Titolo} Livello: {Livello.LivelloCorso}";
+            return $"ID: {Id} Titolo: {Titolo}";
         }
     }
 }

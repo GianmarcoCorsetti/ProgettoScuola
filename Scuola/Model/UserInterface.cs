@@ -17,6 +17,7 @@ namespace Scuola.Model {
             " - inserisci 'c' per inserire una nuova edizione di un corso \n " +
             " - inserisci 'd' per cercare le edizioni di un corso \n " +
             " - Inserisci 'e' per poter fare un report statistico del corso \n " +
+            " - Inserisci 'f' per creare un'azienda \n " +
             " - inserisci 'q' per uscire dal menù \n";
         const string BASE_PROMPT = "=> ";
         public UserInterface (CourseService service){
@@ -37,16 +38,19 @@ namespace Scuola.Model {
                         ShowCourses();
                         break;
                     case 'b':
-                        CreateCourse();
+                        CreateACourse();
                         break;
                     case 'c':
-                        ShowCourseEditionsByCourse();
+                        CreateCourseEdition();
                         break;
                     case 'd':
-                        CreateCourseEdition();
+                        ShowCourseEditionsByCourse();
                         break;
                     case 'e':
                         ShowStatisticalReport();
+                        break;
+                    case 'f':
+                        CreateAzienda();
                         break;
                     case 'q':
                         quit = true;
@@ -63,23 +67,52 @@ namespace Scuola.Model {
             Report rp = CourseService.GenerateStatisticalReport(idCorso);
             rp.ToString();
         }
-        public void CreateCourseEdition(){ // Da fare
-            long idEdition = ReadLong("Inserire l'Id della edizione del corso : "); // ok
-            //long idCourse = ReadLong("Inserire l'Id del corso : "); questo non va bene perché dobbiamo creare un Corso
-
+        public void CreateCourseEdition(){ //OK
             LocalDate start = ReadLocalDate("Inserire la data di inizio del corso (yyyy-mm-dd) : ");
             LocalDate finish = ReadLocalDate("Inserire la data di fine del corso (yyyy-mm-dd) : ");
-            int numStudents = (int)ReadLong("Inserire il numero di studenti che seguiranno il corso: ");
+            int maxStudents = (int)ReadLong("Inserire il numero di studenti massimo che potranno seguire il corso: ");
             decimal realPrice = ReadDecimal("Inserire il prezzo finale dell'edizione del corso : ");
-            var edition = new EdizioneCorso(id: idEdition, classCorso: null, start: start, end: finish, numStudents: numStudents, realPrice: realPrice);
-            if(CourseService.CreateCourseEdition(edition, idCourse) == null){
-                WriteLine(DIVISORE);
-                WriteLine("Impossibile aggiungere edizioni con lo stesso ID");
-            }else{
-                CourseService.CreateCourseEdition(edition, idCourse);
-                Console.Clear();
-                WriteLine("Edizione Inserita con successo");
-            }
+            bool inPresenza = ReadBool("Inserire il valore booleano riguardante lo stato di presenza o meno dell corso: ");
+            Aula aula = CreateAula();
+            Corso corso = CreateCourse();
+            Finanziatore finanziatore = CreateFinanziatore();
+            var edition = new EdizioneCorso(
+                    id: 0,
+                    start: start,
+                    end: finish,
+                    maxStudenti: maxStudents,
+                    realPrice: realPrice,
+                    inPresenza: inPresenza,
+                    aula: aula,
+                    corso: corso, 
+                    finanziatore: finanziatore
+                );
+        }
+        private Aula CreateAula()
+        {
+            // nome, capacità max, virtuale, isComputerized, HasProjector
+            string nome = ReadString("Inserire il nome dell'aula: ");
+            int capacitaMax = (int)ReadLong("Inserire il numero massimo di stuenti che possono essere presenti nell'aula");
+            bool isVirtual = ReadBool("Inserire il valore booleano riguardante lo stato di presenza fisica o meno dell'aula: ");
+            bool isComputerized = ReadBool("Inserire il valore booleano riguardante la presenza o meno dei computer nell'aula: ");
+            bool hasProjector = ReadBool("Inserire il valore booleano riguardante la presenza o meno del proiettore nell'aula: ");
+            Aula aula = new Aula(
+                    id: 0,
+                    nome: nome,
+                    capacitaMax: capacitaMax,
+                    virtuale: isVirtual,
+                    isComputerized: isComputerized,
+                    hasProjector: hasProjector
+                );
+            return aula;
+        }
+        private Finanziatore CreateFinanziatore()
+        {
+            //id, titolo, descrizione
+            string titolo = ReadString("Inserire il titolo del finanziatore: ");
+            string descrizione = ReadString("Inserire la descrizione del finanziotore: ");
+            Finanziatore finanziatore = new Finanziatore(id: 0, titolo: titolo, descrizione: descrizione);
+            return finanziatore;
         }
         private void ShowCourses(){ // OK 
             IEnumerable<Corso> courses = CourseService.GetAllCourses();
@@ -87,20 +120,41 @@ namespace Scuola.Model {
                 WriteLine(c.ToString());
             }
         }
-        private void CreateCourse(){ // Da fare
-            long id = ReadLong("Inserisci l'id del corso: "); // ok
-            string titolo = ReadString("Inserisci il titolo del corso: "); // ok 
-            int ammontareOre = (int)ReadLong("Inserisci il numero di ore del corso: ");// ok
-            string descrizione = ReadString("Inserisci una descrizione del corso: ");// ok
-            decimal costoRiferimento = ReadDecimal("Inserisci il costo di riferimento del corso: ");// ok
-            string livelloString = ReadString("Inserire il livello del corso tra le seguenti : " +
+        private bool ReadBool(string prompt){
+            string boolString = ReadString(prompt);
+            bool boolIsGood = false;
+            bool boolVal;
+            do
+            {
+                boolString = ReadString("Inserire 'True' altrimenti 'False' : ");
+                boolIsGood = bool.TryParse(boolString, out boolVal);
+                if (!boolIsGood)
+                {
+                    WriteLine("Inserisci un valore valido! ");
+                }
+            }
+            while (!boolIsGood);
+            return boolVal;
+        }
+
+        private Level CreateLevel()
+        {
+            //long id = ReadLong("Inserisci l'id del livello: ");
+            string descrizione = ReadString("Inserisci la descrizione del livello: ");
+            ExperienceLevel experienceLevel = ReadExperienceLevel("Inserire il livello del corso tra le seguenti : " +
                 "PRINCIPIANTE - MEDIO - ESPERTO - GURU: ");
+            
+            return new Level(id: 0, descrizione: descrizione, livelloCorso: experienceLevel);
+        }
+
+        private ExperienceLevel ReadExperienceLevel(string prompt)
+        {
+            string livelloString = ReadString(prompt);
             bool ExpIsGood = false;
             ExperienceLevel level;
             do
             {
                 livelloString = ReadString("Inserire Livello del corso: PRINCIPIANTE | MEDIO | ESPERTO | GURU =>");
-
                 ExpIsGood = Enum.TryParse(livelloString, out level);
                 if (!ExpIsGood)
                 {
@@ -108,18 +162,113 @@ namespace Scuola.Model {
                 }
             }
             while (!ExpIsGood);
-            int durata = (int)ReadLong("Inserisci la durata del corso");
-            decimal prezzo = ReadDecimal("Inserisci il prezzo del corso");
-            Corso c = new Corso(
-                newId: id,
-                newTitolo: titolo,
-                newDurataInOre: durata,
-                newLevel: level,
-                newDescription: descrizione,
-                newStandardPrice: prezzo
+            return level;
+        }
+
+        private Categoria CreateCategoria()
+        {
+            // id , categoria, descrizione
+            //long id = ReadLong("Inserisci l'id della categoria: ");
+            string descrizione = ReadString("Inserisci la descrizione della categoria: ");
+            Category categoria = ReadCategoria("Inserire la categoria tra le seguenti : " +
+                "GRAFICA, SVILUPPOSOFTWARE, LINGUE, SISTEMISTICA");
+            return new Categoria(0, categoriaCorso: categoria, descrizione);
+        }
+
+        private Category ReadCategoria (string prompt)
+        {
+            string catString = ReadString(prompt);
+            bool ExpIsGood = false;
+            Category cat;
+            do
+            {
+                catString = ReadString("Inserire Livello del corso: PRINCIPIANTE | MEDIO | ESPERTO | GURU =>");
+                ExpIsGood = Enum.TryParse(catString, out cat);
+                if (!ExpIsGood)
+                {
+                    WriteLine("Inserisci un livello valido");
+                }
+            }
+            while (!ExpIsGood);
+            return cat;
+        }
+
+        private Progetto CreateProgetto()
+        {
+            //long id = ReadLong("Inserisci l'id del progetto: ");
+            string titolo = ReadString("Inserisci il titolo del progetto: ");
+            string descrizione = ReadString("Inserisci la descrizione del progetto: ");
+            long id_azienda = ReadLong("Inserisci l'id dell'azienda");
+
+            return new Progetto(0, titolo, descrizione, CourseService.GetAzienda(id_azienda));
+        }
+
+        private void CreateAzienda()
+        {
+            string nome = ReadString("Inserire il nome dell'azienda: ");
+            string citta = ReadString("Inserire il nome della città in cui ha sede l'azienda: ");
+            string indirizzo = ReadString("Inserire l'indirizzo dell'azienda: ");
+            string cP = ReadString("inserire il codice postale dell'azienda: ");
+            string telefono = ReadString("Inserire il numerod di telefono: ");
+            string email = ReadString("inserisci l'email dell'azienda: ");
+            string partitaIva = ReadString("inserisci la partita iva dell'azienda: ");
+            Azienda azienda = new Azienda(
+                    id: 0,
+                    nome: nome,
+                    citta: citta, 
+                    indirizzo: indirizzo, 
+                    cP:cP,
+                    telefono: telefono, 
+                    email: email,
+                    partitaIva: partitaIva
                 );
+            CourseService.CreateAzienda(azienda);
+            Console.WriteLine("Azienda inserita con successo");
+        }
+        
+        private void CreateACourse(){ // Da fare
+            //long id = ReadLong("Inserisci l'id del corso: "); // ok
+            string titolo = ReadString("Inserisci il titolo del corso: "); // ok 
+            int ammontareOre = (int)ReadLong("Inserisci il numero di ore del corso: ");// ok
+            string descrizione = ReadString("Inserisci una descrizione del corso: ");// ok
+            decimal costoRiferimento = ReadDecimal("Inserisci il costo di riferimento del corso: ");// ok
+            Level livello = CreateLevel(); // Creo il livello
+            Progetto progetto = CreateProgetto(); // Creo il progetto
+            Categoria categoria = CreateCategoria(); // Creo la categoria 
+            Corso c = new Corso(
+                id: 0,
+                titolo: titolo,
+                ammontareOre: ammontareOre,
+                descrizione: descrizione,
+                costoDiRiferimento: costoRiferimento,
+                livello: livello,
+                progetto: progetto,
+                categoria: categoria
+            );
             CourseService.CreateCourse(c);
             WriteLine("Corso inserito con successo");
+        }
+        private Corso CreateCourse(){ 
+            //long id = ReadLong("Inserisci l'id del corso: "); // ok
+            string titolo = ReadString("Inserisci il titolo del corso: "); // ok 
+            int ammontareOre = (int)ReadLong("Inserisci il numero di ore del corso: ");// ok
+            string descrizione = ReadString("Inserisci una descrizione del corso: ");// ok
+            decimal costoRiferimento = ReadDecimal("Inserisci il costo di riferimento del corso: ");// ok
+            Level livello = CreateLevel(); // Creo il livello
+            Progetto progetto = CreateProgetto(); // Creo il progetto
+            Categoria categoria = CreateCategoria(); // Creo la categoria 
+            Corso c = new Corso(
+                id: 0,
+                titolo: titolo,
+                ammontareOre: ammontareOre,
+                descrizione: descrizione,
+                costoDiRiferimento: costoRiferimento,
+                livello: livello,
+                progetto: progetto,
+                categoria: categoria
+            );
+            CourseService.CreateCourse(c);
+            return c;
         }
         private void ShowCourseEditionsByCourse(){ // Da controllare, penso ok
             long id = ReadLong("Inserisci l'id del corso: ");

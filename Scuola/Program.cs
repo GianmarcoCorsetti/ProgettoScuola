@@ -8,12 +8,13 @@ namespace Scuola {
     class Program {
         static void Main(string[] args)
         {
-            //IRepository repo = new InMemoryRepository();
-            //CourseService cs = new CourseService(repo);
-            //UserInterface ui = new UserInterface(cs);
+            // IRepository repo = new InMemoryRepository();
+            IRepository repo = new DatabaseRepository();
+            CourseService cs = new CourseService(repo);
+            UserInterface ui = new UserInterface(cs);
             //// iniezione delle dipendenze : il soggetto a cui viene iniettata la indipendenza può non sapere che indipendenza è
-            //ui.Start();
-            
+            ui.Start();
+
             // 1
             // Modificare le classi edizioneCorso e Corso in base alle specifiche presenti nel Database, così da essere
             // coerenti rispetto al db. E modificare il codice esistente di conseguenza. 
