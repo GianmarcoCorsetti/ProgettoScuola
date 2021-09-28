@@ -8,39 +8,33 @@ using System.Threading.Tasks;
 namespace Scuola.Model {
     public class EdizioneCorso{
         public long Id { get; set; }
-        public Corso NomeCorso { get; set; }
         public LocalDate Start { get; set; }
         public LocalDate End{ get; set; }
-        public int NumStudents { get; set; }
+        public int MaxStudenti { get; set; }
         public decimal RealPrice { get; set; }
-        private AddStudents ad;
-        public EdizioneCorso(long id, Corso nomeCorso, LocalDate start, LocalDate end, int numStudents, decimal realPrice){
+        public bool InPresenza{ get; set; }
+        public Aula Aule { get; set; }
+        public Corso ClassCorso { get; set; }
+        public Finanziatore ClassFinanziatore { get; set; }
+        public EdizioneCorso(long id, LocalDate start, LocalDate end, int maxStudenti, decimal realPrice, bool inPresenza, Aula aule, Corso classCorso, Finanziatore classFinanziatore)
+        {
             Id = id;
-            NomeCorso = nomeCorso;
             Start = start;
             End = end;
-            NumStudents = numStudents;
+            MaxStudenti = maxStudenti;
             RealPrice = realPrice;
-            ad += Iscrivi;
-        }
-        public void AggiornaEdizione()
-        {
-            NumStudents += ad();
-        }
-        public void ChangeAdder( AddStudents x)
-        {
-            ad = x;
+            InPresenza = inPresenza;
+            Aule = aule;
+            ClassCorso = classCorso;
+            ClassFinanziatore = classFinanziatore;
         }
         public override string ToString()
         {
-            return $"Id: {Id}, Titolo del corso: {NomeCorso.Titolo}, Data di Inizio: {Start}, Data di Fine: {End}, Prezzo: {RealPrice}";
-        }
-        public int Iscrivi(){
-            return 10;
+            return $"Id: {Id}, Titolo del corso: {ClassCorso.Titolo}, Data di Inizio: {Start}, Data di Fine: {End}, Prezzo: {RealPrice}";
         }
     }
     // i delegati sono degli oggetti  ( è come creare una classe ) e questi delegati possono puntare a una o più funzioni
     // questo è un delegato per le funzioni senza parametri che restituiscono un intero
-    public delegate int AddStudents();
-    public delegate void EnrollStudents(int x);
+    //public delegate int AddStudents();
+    //public delegate void EnrollStudents(int x);
 }

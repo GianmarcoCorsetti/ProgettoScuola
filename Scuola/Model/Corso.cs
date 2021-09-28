@@ -5,32 +5,29 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Scuola.Model {
-
-    public enum ExperienceLevel{ // convenzione si usa una notazione tutta maiuscola
-        PRINCIPIANTE,
-        MEDIO,
-        ESPERTO,
-        GURU
-    }
-    public class Corso : Object{
+    public class Corso {
         public long Id { get; set; }
         public string Titolo { get; set; }
         public int AmmontareOre { get; set; }
-        public ExperienceLevel Level { get; set; }
-        public int MyProperty { get; set; }
         public string Descrizione { get; set; }
         public decimal CostoDiRiferimento { get; set; }
-
-        public Corso(long newId, string newTitolo, int newDurataInOre, ExperienceLevel newLevel, string newDescription, decimal newStandardPrice){
-            Id = newId;
-            Titolo = newTitolo;
-            DurataInOre = newDurataInOre;
-            Description = newDescription;
-            StandardPrice = newStandardPrice;
+        public Level Livello { get; set; }
+        public Progetti Project { get; set; }
+        public Categoria Category { get; set; }
+        public Corso(long id, string titolo, int ammontareOre, string descrizione, decimal costoDiRiferimento, Level livello, Progetti project, Categoria category)
+        {
+            Id = id;
+            Titolo = titolo;
+            AmmontareOre = ammontareOre;
+            Descrizione = descrizione;
+            CostoDiRiferimento = costoDiRiferimento;
+            Livello = livello;
+            Project = project;
+            Category = category;
         }
         public override string ToString()
         {
-            return $"ID: {Id} Titolo: {Titolo} Livello: {Level}";
+            return $"ID: {Id} Titolo: {Titolo} Livello: {Livello.LivelloCorso}";
         }
     }
 }

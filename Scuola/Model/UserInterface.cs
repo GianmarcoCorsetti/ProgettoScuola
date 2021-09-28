@@ -57,20 +57,21 @@ namespace Scuola.Model {
                 }
             } while (!quit);
         }
-        public void ShowStatisticalReport()
+        public void ShowStatisticalReport() // OK
         {
             long idCorso = ReadLong("Inserire l'id del corso :");
             Report rp = CourseService.GenerateStatisticalReport(idCorso);
             rp.ToString();
         }
-        public void CreateCourseEdition(){
-            long idEdition = ReadLong("Inserire l'Id della edizione del corso : ");
-            long idCourse = ReadLong("Inserire l'Id del corso : ");
+        public void CreateCourseEdition(){ // Da fare
+            long idEdition = ReadLong("Inserire l'Id della edizione del corso : "); // ok
+            //long idCourse = ReadLong("Inserire l'Id del corso : "); questo non va bene perché dobbiamo creare un Corso
+
             LocalDate start = ReadLocalDate("Inserire la data di inizio del corso (yyyy-mm-dd) : ");
             LocalDate finish = ReadLocalDate("Inserire la data di fine del corso (yyyy-mm-dd) : ");
             int numStudents = (int)ReadLong("Inserire il numero di studenti che seguiranno il corso: ");
             decimal realPrice = ReadDecimal("Inserire il prezzo finale dell'edizione del corso : ");
-            var edition = new EdizioneCorso(id: idEdition, nomeCorso: null, start: start, end: finish, numStudents: numStudents, realPrice: realPrice);
+            var edition = new EdizioneCorso(id: idEdition, classCorso: null, start: start, end: finish, numStudents: numStudents, realPrice: realPrice);
             if(CourseService.CreateCourseEdition(edition, idCourse) == null){
                 WriteLine(DIVISORE);
                 WriteLine("Impossibile aggiungere edizioni con lo stesso ID");
@@ -80,16 +81,18 @@ namespace Scuola.Model {
                 WriteLine("Edizione Inserita con successo");
             }
         }
-        private void ShowCourses(){
+        private void ShowCourses(){ // OK 
             IEnumerable<Corso> courses = CourseService.GetAllCourses();
             foreach (var c in courses){
                 WriteLine(c.ToString());
             }
         }
-        private void CreateCourse(){
-            long id = ReadLong("Inserisci l'id del corso: ");
-            string titolo = ReadString("Inserisci il titolo del corso: ");
-            string descrizione = ReadString("Inserisci una descrizione del corso: ");
+        private void CreateCourse(){ // Da fare
+            long id = ReadLong("Inserisci l'id del corso: "); // ok
+            string titolo = ReadString("Inserisci il titolo del corso: "); // ok 
+            int ammontareOre = (int)ReadLong("Inserisci il numero di ore del corso: ");// ok
+            string descrizione = ReadString("Inserisci una descrizione del corso: ");// ok
+            decimal costoRiferimento = ReadDecimal("Inserisci il costo di riferimento del corso: ");// ok
             string livelloString = ReadString("Inserire il livello del corso tra le seguenti : " +
                 "PRINCIPIANTE - MEDIO - ESPERTO - GURU: ");
             bool ExpIsGood = false;
@@ -118,7 +121,7 @@ namespace Scuola.Model {
             CourseService.CreateCourse(c);
             WriteLine("Corso inserito con successo");
         }
-        private void ShowCourseEditionsByCourse(){
+        private void ShowCourseEditionsByCourse(){ // Da controllare, penso ok
             long id = ReadLong("Inserisci l'id del corso: ");
             IEnumerable<EdizioneCorso> editions = CourseService.GetCourseEdition(id);
             if( editions == null){

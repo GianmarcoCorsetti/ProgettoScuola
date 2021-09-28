@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NodaTime;
+using static Scuola.Model.Level;
 
 namespace Scuola.Model.Data {
     public class InMemoryRepository : IRepository {
@@ -14,23 +15,91 @@ namespace Scuola.Model.Data {
         // quindi nel contains è efficace
         public InMemoryRepository(){
             Corso c = new Corso(
-                newId: 241499, 
-                newTitolo: "CorsoX", 
-                newDurataInOre: 240, 
-                newLevel: ExperienceLevel.MEDIO,
-                newDescription: "Questo è un corso bello e inventato" ,
-                newStandardPrice: 2000);
+                id: 241499,
+                titolo: "CorsoX",
+                ammontareOre: 240,
+                livello: new Level(3203192, ExperienceLevel.MEDIO, "è un corso bello"),
+                descrizione: "Questo è un corso bello e inventato",
+                costoDiRiferimento: 2000,
+                project: new Progetti(
+                    id: 103913,
+                    descrizione: "questo è un bel progetto",
+                    titolo: "Pierugolandia",
+                    classAzienda: new Azienda(
+                        id: 328832,
+                        nome: "GMG",
+                        citta: "Treviso",
+                        indirizzo: "Via delle Lavandaie",
+                        cP: "00072",
+                        telefono: "3922351915",
+                        email: "gianmarco.bello97@gmail.com",
+                        partitaIva: "29381923712"
+                                            )
+                    ),
+                category: new Categoria(
+                    id: 361273,
+                    categoriaCorso: Category.SISTEMISTICA,
+                    descrizione: "mi sono rotto i cojoni"
+                    )
+               );
             courses.Add(c);
             EdizioneCorso ed = new EdizioneCorso(
                 id: 241499,
-                nomeCorso: c,
                 start: new LocalDate(year: 1998, month: 11 , day: 11),
                 end: new LocalDate(year: 1999, month: 11, day: 11),
-                numStudents: 200,
-                realPrice: 4000
-                );
+                maxStudenti: 200,
+                realPrice: 4000,
+                inPresenza: true,
+                aule: new Aula(
+                    id: 31623,
+                    nome: "Aula Archimede",
+                    capacitaMax: 200,
+                    virtuale: true,
+                    isComputerized: true,
+                    hasProjector: true
+                    ),
+                classCorso: new Corso(
+                    id: 241499,
+                    titolo: "CorsoX",
+                    ammontareOre: 240,
+                    livello: new Level(3203192, ExperienceLevel.MEDIO, "è un corso bello"),
+                    descrizione: "Questo è un corso bello e inventato",
+                    costoDiRiferimento: 2000,
+                    project: new Progetti(
+                        id: 103913,
+                        descrizione: "questo è un bel progetto",
+                        titolo: "Pierugolandia",
+                        classAzienda: new Azienda(
+                            id: 328832,
+                            nome: "GMG",
+                            citta: "Treviso",
+                            indirizzo: "Via delle Lavandaie",
+                            cP: "00072",
+                            telefono: "3922351915",
+                            email: "gianmarco.bello97@gmail.com",
+                            partitaIva: "29381923712"
+                                                )
+                        ),
+                    category: new Categoria(
+                        id: 361273,
+                        categoriaCorso: Category.SISTEMISTICA,
+                        descrizione: "mi sono rotto i cojoni"
+                        )
+                   ),
+                   classFinanziatore: new Finanziatore(
+                        id: 6371823,
+                        titolo: "Finanzia sta ceppa",
+                        descrizione: "può bastare così"
+                        )
+                    );
             courseEditions.Add(ed);
         }
+
+        private Level Level(int v)
+        {
+            throw new NotImplementedException();
+        }
+
         public Corso AddCourse2 (Corso c)
         {
             bool added = courseSet.Add(c);
@@ -51,7 +120,7 @@ namespace Scuola.Model.Data {
         {
             List<EdizioneCorso> edizioniScelte = new List<EdizioneCorso>();
             foreach (var edizione in courseEditions){
-                if (edizione.NomeCorso.Id == courseId)
+                if (edizione.ClassCorso.Id == courseId)
                 {
                     edizioniScelte.Add(edizione);
                 }
@@ -85,7 +154,7 @@ namespace Scuola.Model.Data {
         public IEnumerable<EdizioneCorso> FindEditionByCourses(long courseId){
             List<EdizioneCorso> editions = new List<EdizioneCorso>();
             foreach (var ed in courseEditions){
-                if (ed.NomeCorso.Id == courseId){
+                if (ed.ClassCorso.Id == courseId){
                     editions.Add(ed);
                 }
             }
