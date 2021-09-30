@@ -11,12 +11,12 @@ namespace Scuola.Model {
         ESPERTO,
         GURU
     }
-    public class Level {
+    public class Livello {
         
         public long Id { get; set; }
         public ExperienceLevel LivelloCorso { get; set; }
         public string Descrizione { get; set; }
-        public Level(long id, ExperienceLevel livelloCorso, string descrizione)
+        public Livello(long id, ExperienceLevel livelloCorso, string descrizione)
         {
             Id = id;
             LivelloCorso = livelloCorso;

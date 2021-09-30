@@ -11,13 +11,20 @@ namespace Scuola.Model {
         public string Descrizione { get; set; }
         public Azienda Azienda { get; set; }
         public long IdAzienda{ get; set; }
-        public Progetto(long id, string titolo, string descrizione, Azienda classAzienda)
+        public Progetto(long id, string titolo, string descrizione, long idAzienda)
         {
             Id = id;
             Titolo = titolo;
             Descrizione = descrizione;
-            Azienda = classAzienda;
-            IdAzienda = Azienda.Id;
+            IdAzienda = idAzienda;
         }
+        public Progetto(long id, string titolo, string descrizione, Azienda azienda)
+        {
+            Id = id;
+            Titolo = titolo;
+            Descrizione = descrizione;
+            Azienda = azienda;
+        }
+
     }
 }

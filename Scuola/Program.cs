@@ -8,8 +8,8 @@ namespace Scuola {
     class Program {
         static void Main(string[] args)
         {
-            // IRepository repo = new InMemoryRepository();
-            IRepository repo = new DatabaseRepository();
+            IRepository repo = new InMemoryRepository();
+            //IRepository repo = new DatabaseRepository();
             CourseService cs = new CourseService(repo);
             UserInterface ui = new UserInterface(cs);
             //// iniezione delle dipendenze : il soggetto a cui viene iniettata la indipendenza può non sapere che indipendenza è

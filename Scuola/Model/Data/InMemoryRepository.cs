@@ -4,14 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NodaTime;
-using static Scuola.Model.Level;
+using static Scuola.Model.Livello;
 
 namespace Scuola.Model.Data {
     public class InMemoryRepository : IRepository {
-        private List<Corso> courses = new List<Corso>();
+        private List<Corso> corsi = new List<Corso>();
         private List<EdizioneCorso> courseEditions = new List<EdizioneCorso>();
         private ISet<Corso> courseSet = new HashSet<Corso>();
         private List<Azienda> aziende = new List<Azienda>();
+        private List<Progetto> progetti = new List<Progetto>();
+        private List<Categoria> categorie = new List<Categoria>();
         private static long lastIdCourse = 2;
         private static long lastIdEdition = 1;
         private static long lastIdProgetti = 2;
@@ -25,14 +27,14 @@ namespace Scuola.Model.Data {
                 id: 1,
                 titolo: "CorsoX",
                 ammontareOre: 240,
-                livello: new Level(3203192, ExperienceLevel.MEDIO, "è un corso bello"),
+                livello: new Livello(3203192, ExperienceLevel.MEDIO, "è un corso bello"),
                 descrizione: "Questo è un corso bello e inventato",
                 costoDiRiferimento: 2000,
                 progetto: new Progetto(
                     id: 1,
                     descrizione: "questo è un bel progetto",
                     titolo: "Pierugolandia",
-                    classAzienda: new Azienda(
+                    azienda: new Azienda(
                         id: 1,
                         nome: "GMG",
                         citta: "Treviso",
@@ -49,7 +51,7 @@ namespace Scuola.Model.Data {
                     descrizione: "mi sono rotto i cojoni"
                     )
                );
-            courses.Add(c);
+            corsi.Add(c);
             EdizioneCorso ed = new EdizioneCorso(
                 id: 1,
                 start: new LocalDate(year: 1998, month: 11 , day: 11),
@@ -86,7 +88,7 @@ namespace Scuola.Model.Data {
             
         }
 
-        private Level Level(int v)
+        private Livello Level(int v)
         {
             throw new NotImplementedException();
         }
@@ -106,12 +108,12 @@ namespace Scuola.Model.Data {
             {
                 newCoruse.Id = ++lastIdCourse;
             }
-            if ( courses.Contains(newCoruse) ){
+            if ( corsi.Contains(newCoruse) ){
                 Console.WriteLine("Questo corso è già esistente");
                 return null;
             }
             else{
-                courses.Add(newCoruse);
+                corsi.Add(newCoruse);
                 return newCoruse;
             }
         }
@@ -145,7 +147,19 @@ namespace Scuola.Model.Data {
         }
         public IEnumerable<Corso> GetCourses()
         {
-            return courses;
+            return corsi;
+        }
+        public IEnumerable<Azienda> GetAziendas()
+        {
+            return aziende;
+        }
+        public IEnumerable<Categoria> GetCategorias()
+        {
+            return categorie;
+        }
+        public IEnumerable<Progetto> GetProgettos()
+        {
+            return progetti;
         }
         // anche se si aspetta un Enumerable, dato che la lista è una sottoclasse di Enumerable allora può essere fatto
         public EdizioneCorso AddEdition(EdizioneCorso ed){
@@ -156,15 +170,8 @@ namespace Scuola.Model.Data {
             courseEditions.Add(ed);
             return ed;
         }
-        public Corso FindById( long id ){
-            foreach (var c in courses){
-                if (c.Id == id)
-                    return c;
-            }
-            return null;
-        }
-        public Corso BETTERFindById ( long id){
-            Corso found = courses.SingleOrDefault((Corso c) => {
+        public Corso FindCourseById ( long id ){
+            Corso found = corsi.SingleOrDefault((Corso c) => {
                 return c.Id == id;
             });
             return found;
@@ -188,6 +195,66 @@ namespace Scuola.Model.Data {
                 return a.Id == id;
             });
             return found;
+        }
+
+        public Livello AddLivello(Livello newLivello)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Categoria AddCategoria(Categoria newCategoria)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Progetto AddProgetto(Progetto newProgetto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Livello FindLivelloById(long id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Categoria FindCategoriaById(long id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Progetto FindProgettoById(long id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Aula> GetAulas()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Finanziatore> GetFinanziatores()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Aula AddAula(Aula newAula)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Finanziatore AddFinanziatore(Finanziatore newFinanziatore)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Aula FindAulaById(long id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Finanziatore FindFinanziatoreById(long id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

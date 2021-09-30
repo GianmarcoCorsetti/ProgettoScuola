@@ -11,7 +11,7 @@ namespace Scuola.Model {
         public int AmmontareOre { get; set; }
         public string Descrizione { get; set; }
         public decimal CostoDiRiferimento { get; set; }
-        public Level Livello { get; set; }
+        public Livello Livello { get; set; }
         public long IdLivello { get; set; }
         public Progetto Progetto { get; set; }
         public long IdProgetto { get; set; }
@@ -28,7 +28,7 @@ namespace Scuola.Model {
             IdProgetto = idProgetto;
             IdCategoria = idCategoria;
         }
-        public Corso(long id, string titolo, int ammontareOre, string descrizione, decimal costoDiRiferimento, Level livello, Progetto progetto, Categoria categoria)
+        public Corso(long id, string titolo, int ammontareOre, string descrizione, decimal costoDiRiferimento, Livello livello, Progetto progetto, Categoria categoria)
         {
             Id = id;
             Titolo = titolo;
